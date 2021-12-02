@@ -3,6 +3,8 @@ import 'package:meu_consultorio/ui/home.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 import '../data/chart_dao.dart';
+import '../data/user_dao.dart';
+import 'ui/login.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,7 +21,10 @@ class MyClinic extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        // TODO: Add ChangeNotifierProvider<UserDao> here
+        ChangeNotifierProvider<UserDao>(
+          lazy: false,
+          create: (_) => UserDao(),
+        ),
         Provider<ChartDao>(
           lazy: false,
           create: (_) => ChartDao(),
@@ -29,7 +34,15 @@ class MyClinic extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'MyCLinic',
         theme: ThemeData(primaryColor: Colors.white),
-        home: Home(),
+        home: Consumer<UserDao>(
+          builder: (context, userDao, child) {
+            if (userDao.isLoggedIn()) {
+              return const Home();
+            } else {
+              return const Login();
+            }
+          },
+        ),
       ),
     );
   }

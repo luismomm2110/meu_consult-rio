@@ -1,9 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:meu_consultorio/data/user_dao.dart';
 import 'package:provider/provider.dart';
 
-import '../data/chart.dart';
+import '../models/chart.dart';
 import '../data/chart_dao.dart';
 import 'chart_widget.dart';
 
@@ -17,15 +18,27 @@ class Home extends StatefulWidget {
 class HomeState extends State<Home> {
   final TextEditingController _chartController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
+  String? email;
+
 
   @override
   Widget build(BuildContext context) {
     WidgetsBinding.instance!.addPostFrameCallback((_) => _scrollToBottom());
     final chartDao = Provider.of<ChartDao>(context, listen: false);
+    final userDao = Provider.of<UserDao>(context, listen: false);
+    email = userDao.email();
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('My Clinic'),
+        actions: [
+          IconButton(
+            onPressed: () {
+              userDao.logout();
+            },
+            icon: const Icon(Icons.logout),
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

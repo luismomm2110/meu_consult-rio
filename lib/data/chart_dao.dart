@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'chart.dart';
+import '../models/chart.dart';
 
 class ChartDao {
   final CollectionReference collection =
