@@ -1,9 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
+
 import '../data/chart.dart';
 import '../data/chart_dao.dart';
+import 'chart_widget.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -75,12 +77,39 @@ class HomeState extends State<Home> {
   }
 
   Widget _getChartList(ChartDao chartDao) {
-    return const SizedBox.shrink();
+    return Expanded(
+      child: StreamBuilder<QuerySnapshot>(
+        stream: chartDao.getChartStream(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData)
+            return const Center(child: LinearProgressIndicator());
+
+          return _buildList(context, snapshot.data!.docs);
+        },
+      ),
+    );
   }
 
-  // TODO: Add _buildList
+  Widget _buildList(BuildContext context, List<DocumentSnapshot>? snapshot) {
+    // 1
+    return ListView(
+      controller: _scrollController,
+      physics: const BouncingScrollPhysics(),
+      padding: const EdgeInsets.only(top: 20.0),
+      // 2
+      children: snapshot!.map((data) => _buildListItem(context, data)).toList(),
+    );
+  }
 
-  // TODO: Add _buildListItem
+  Widget _buildListItem(BuildContext context, DocumentSnapshot snapshot) {
+    // 1
+    final chart = Chart.fromSnapshot(snapshot);
+    // 2
+    return ChartWidget(
+      chart.text,
+      chart.date,
+    );
+  }
 
   bool _canSendChart() => _chartController.text.length > 0;
 
