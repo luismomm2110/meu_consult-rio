@@ -2,23 +2,23 @@
 
 ***
 
-## Equipe 
+## Equipe
 
 ***
 
 - Luis Antonio Momm Duarte
-- Matheus Ferreira 
-- Santiago Nunes 
+- Matheus Ferreira
+- Santiago Nunes
 
-## Funcionalidades 
+## Funcionalidades
 
 ***
 
 - Login e Senha para perfis de médicos e pacientes
-- Médicos poderão registrar receitas, pacientes poderão ler 
-- Ambos poderão marcar ou cancelar consultas 
+- Médicos poderão registrar receitas, pacientes poderão ler
+- Ambos poderão marcar ou cancelar consultas
 
-## Pacotes utilizados 
+## Pacotes utilizados
 
 ***
 
@@ -26,8 +26,11 @@
 | ---| --- | --- |
 | firebase_core | 1.6.0 | Pacote básico para utilizar o firebase |
 | cloud_firestore | 2.5.3 | Persistência de banco de dados | 
+| provider | 6.0.0 | Gerenciador de Estado para Widgets | 
+| intl | 0.17.0 | Internacionalização de Medidas | 
+| firebase_auth | 3.1.1 | Autenticação da database do Firebase
 
-## Informações para execução 
+## Informações para execução
 
 ***
 
