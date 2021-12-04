@@ -1,6 +1,9 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:meu_consultorio/models/doctor.dart';
 import 'package:provider/provider.dart';
 import '../data/user_dao.dart';
 
@@ -12,12 +15,16 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+  final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
+  bool isDoctor = false;
+
   @override
   void dispose() {
+    _nameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
@@ -26,12 +33,13 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     final userDao = Provider.of<UserDao>(context, listen: false);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('My Clinic'),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(32.0),
+        padding: const EdgeInsets.all(12.0),
         child: Form(
           key: _formKey,
           child: Column(
@@ -39,6 +47,30 @@ class _LoginState extends State<Login> {
               Row(
                 children: [
                   const SizedBox(height: 80),
+                  Expanded(
+                    child: TextFormField(
+                      decoration: const InputDecoration(
+                        border: UnderlineInputBorder(),
+                        hintText: 'Insert your name',
+                      ),
+                      autofocus: false,
+                      keyboardType: TextInputType.name,
+                      textCapitalization: TextCapitalization.none,
+                      autocorrect: false,
+                      controller: _nameController,
+                      validator: (String? value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Name Required';
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                ],
+              ),
+              Row(
+                children: [
+                  SizedBox(height: 20),
                   Expanded(
                     child: TextFormField(
                       decoration: const InputDecoration(
@@ -83,6 +115,20 @@ class _LoginState extends State<Login> {
                   ),
                 ],
               ),
+              Row(
+                children: [
+                  const SizedBox(height: 40),
+                  Checkbox(
+                      value: this.isDoctor,
+                      activeColor: Colors.black,
+                      onChanged: (bool? value) {
+                        setState(() {
+                          this.isDoctor = value!;
+                        });
+                      }),
+                  const Text("Are you a doctor?")
+                ],
+              ),
               const Spacer(),
               Row(
                 children: [
@@ -104,8 +150,8 @@ class _LoginState extends State<Login> {
                   Expanded(
                     child: ElevatedButton(
                       onPressed: () {
-                        userDao.signup(
-                            _emailController.text, _passwordController.text);
+                        userDao.signup(_emailController.text,
+                            _passwordController.text, _createDoctor());
                       },
                       child: const Text('Sign Up'),
                     ),
@@ -118,5 +164,13 @@ class _LoginState extends State<Login> {
         ),
       ),
     );
+  }
+
+  Doctor _createDoctor() {
+    Doctor doctor = Doctor(
+        name: _nameController.text,
+        email: _emailController.text,
+        medicalId: 'CRM' + (Random().nextInt(900000) + 100000).toString());
+    return doctor;
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:meu_consultorio/data/doctor_dao.dart';
 import 'package:meu_consultorio/ui/home.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
@@ -29,6 +30,10 @@ class MyClinic extends StatelessWidget {
           lazy: false,
           create: (_) => ChartDao(),
         ),
+        Provider<DoctorDao>(
+          lazy: false,
+          create: (_) => DoctorDao(),
+        )
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

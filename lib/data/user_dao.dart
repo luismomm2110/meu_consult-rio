@@ -1,5 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
+import 'package:meu_consultorio/data/doctor_dao.dart';
+import 'package:meu_consultorio/models/doctor.dart';
 
 class UserDao extends ChangeNotifier {
   final auth = FirebaseAuth.instance;
@@ -16,10 +18,14 @@ class UserDao extends ChangeNotifier {
     return auth.currentUser?.email;
   }
 
-  void signup(String email, String password) async {
+  void signup(String email, String password, Doctor? doctor) async {
     try {
       await auth.createUserWithEmailAndPassword(
           email: email, password: password);
+      if (doctor != null) {
+        DoctorDao doctorDao = DoctorDao();
+        doctorDao.saveDoctor(doctor);
+      }
       notifyListeners();
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
