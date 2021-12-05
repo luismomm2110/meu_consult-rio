@@ -1,9 +1,7 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:meu_consultorio/models/doctor.dart';
+import 'package:meu_consultorio/ui/signup.dart';
 import 'package:provider/provider.dart';
 import '../data/user_dao.dart';
 
@@ -32,7 +30,7 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
-    final userDao = Provider.of<UserDao>(context, listen: false);
+    final userDao = Provider.of<UserDao>(context, listen: true);
 
     return Scaffold(
       appBar: AppBar(
@@ -44,30 +42,6 @@ class _LoginState extends State<Login> {
           key: _formKey,
           child: Column(
             children: [
-              Row(
-                children: [
-                  const SizedBox(height: 80),
-                  Expanded(
-                    child: TextFormField(
-                      decoration: const InputDecoration(
-                        border: UnderlineInputBorder(),
-                        hintText: 'Insert your name',
-                      ),
-                      autofocus: false,
-                      keyboardType: TextInputType.name,
-                      textCapitalization: TextCapitalization.none,
-                      autocorrect: false,
-                      controller: _nameController,
-                      validator: (String? value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Name Required';
-                        }
-                        return null;
-                      },
-                    ),
-                  ),
-                ],
-              ),
               Row(
                 children: [
                   SizedBox(height: 20),
@@ -118,15 +92,6 @@ class _LoginState extends State<Login> {
               Row(
                 children: [
                   const SizedBox(height: 40),
-                  Checkbox(
-                      value: this.isDoctor,
-                      activeColor: Colors.black,
-                      onChanged: (bool? value) {
-                        setState(() {
-                          this.isDoctor = value!;
-                        });
-                      }),
-                  const Text("Are you a doctor?")
                 ],
               ),
               const Spacer(),
@@ -149,28 +114,18 @@ class _LoginState extends State<Login> {
                   const SizedBox(height: 20),
                   Expanded(
                     child: ElevatedButton(
-                      onPressed: () {
-                        userDao.signup(_emailController.text,
-                            _passwordController.text, _createDoctor());
-                      },
-                      child: const Text('Sign Up'),
-                    ),
+                        child: const Text(r'Don"t have a account? Sign Up'),
+                        onPressed: () {
+                          Navigator.pushReplacementNamed(context, '/register');
+                        }),
                   ),
-                  const SizedBox(height: 60),
                 ],
               ),
+              const SizedBox(height: 60),
             ],
           ),
         ),
       ),
     );
-  }
-
-  Doctor _createDoctor() {
-    Doctor doctor = Doctor(
-        name: _nameController.text,
-        email: _emailController.text,
-        medicalId: 'CRM' + (Random().nextInt(900000) + 100000).toString());
-    return doctor;
   }
 }

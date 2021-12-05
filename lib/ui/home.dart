@@ -30,7 +30,7 @@ class HomeState extends State<Home> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('My Clinic'),
+        title: const Text("Olguens"),
         actions: [
           IconButton(
             onPressed: () {
