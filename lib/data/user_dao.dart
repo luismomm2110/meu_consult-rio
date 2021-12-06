@@ -18,14 +18,10 @@ class UserDao extends ChangeNotifier {
     return auth.currentUser?.email;
   }
 
-  void signup(String email, String password, Doctor? doctor) async {
+  void signup(String email, String password) async {
     try {
       await auth.createUserWithEmailAndPassword(
           email: email, password: password);
-      if (doctor != null) {
-        DoctorDao doctorDao = DoctorDao();
-        doctorDao.saveDoctor(doctor);
-      }
       notifyListeners();
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {

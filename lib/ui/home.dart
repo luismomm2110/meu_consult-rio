@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -7,6 +8,7 @@ import 'package:provider/provider.dart';
 import '../models/chart.dart';
 import '../data/chart_dao.dart';
 import 'chart_widget.dart';
+import 'login.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -18,8 +20,8 @@ class Home extends StatefulWidget {
 class HomeState extends State<Home> {
   final TextEditingController _chartController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
+  final auth = FirebaseAuth.instance;
   String? email;
-
 
   @override
   Widget build(BuildContext context) {
@@ -30,11 +32,12 @@ class HomeState extends State<Home> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('My Clinic'),
+        title: const Text("Olguens"),
         actions: [
           IconButton(
             onPressed: () {
               userDao.logout();
+              Navigator.pushReplacementNamed(context, '/');
             },
             icon: const Icon(Icons.logout),
           ),
@@ -125,6 +128,11 @@ class HomeState extends State<Home> {
   }
 
   bool _canSendChart() => _chartController.text.length > 0;
+
+  void logout() async {
+    await auth.signOut();
+    Navigator.of(context, rootNavigator: true).pop(context);
+  }
 
   void _scrollToBottom() {
     if (_scrollController.hasClients) {

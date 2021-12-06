@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:meu_consultorio/data/doctor_dao.dart';
 import 'package:meu_consultorio/ui/home.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:meu_consultorio/ui/signup.dart';
 import 'package:provider/provider.dart';
 import '../data/chart_dao.dart';
 import '../data/user_dao.dart';
@@ -16,7 +17,9 @@ Future<void> main() async {
 }
 
 class MyClinic extends StatelessWidget {
-  const MyClinic({Key? key}) : super(key: key);
+  MyClinic({Key? key}) : super(key: key);
+
+  final userDao = UserDao();
 
   @override
   Widget build(BuildContext context) {
@@ -36,19 +39,23 @@ class MyClinic extends StatelessWidget {
         )
       ],
       child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'MyCLinic',
-        theme: ThemeData(primaryColor: Colors.white),
-        home: Consumer<UserDao>(
-          builder: (context, userDao, child) {
-            if (userDao.isLoggedIn()) {
-              return const Home();
-            } else {
-              return const Login();
-            }
-          },
-        ),
-      ),
+          debugShowCheckedModeBanner: false,
+          title: 'MyCLinic',
+          theme: ThemeData(primaryColor: Colors.white),
+          home: Consumer<UserDao>(
+            builder: (context, userDao, child) {
+              if (userDao.isLoggedIn()) {
+                return const Home();
+              } else {
+                return const Login();
+              }
+            },
+          ),
+          routes: {
+            '/register': (context) => SignUp(),
+            '/dashboard': (context) => Home(),
+            '/login': (context) => Login(),
+          }),
     );
   }
 }
