@@ -157,15 +157,12 @@ class _SignUpState extends State<SignUp> {
   }
 
   Future<void> doRegister() async {
-    Doctor doctor = Doctor(
-        name: _nameController.text,
-        email: _emailController.text,
-        medicalId: 'CRM' + (Random().nextInt(900000) + 100000).toString());
-    DoctorDao doctorDao = DoctorDao();
-    doctorDao.saveDoctor(doctor);
     try {
       await auth.createUserWithEmailAndPassword(
           email: _emailController.text, password: _passwordController.text);
+      if (isDoctor) {
+        _createDoctor();
+      }
       Navigator.pushReplacementNamed(context, '/dashboard');
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
@@ -176,5 +173,14 @@ class _SignUpState extends State<SignUp> {
     } catch (e) {
       print(e);
     }
+  }
+
+  void _createDoctor() {
+    Doctor doctor = Doctor(
+        name: _nameController.text,
+        email: _emailController.text,
+        medicalId: 'CRM' + (Random().nextInt(900000) + 100000).toString());
+    DoctorDao doctorDao = DoctorDao();
+    doctorDao.saveDoctor(doctor);
   }
 }
