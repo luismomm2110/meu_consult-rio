@@ -17,7 +17,9 @@ Future<void> main() async {
 }
 
 class MyClinic extends StatelessWidget {
-  const MyClinic({Key? key}) : super(key: key);
+  MyClinic({Key? key}) : super(key: key);
+
+  final userDao = UserDao();
 
   @override
   Widget build(BuildContext context) {
@@ -52,6 +54,7 @@ class MyClinic extends StatelessWidget {
           routes: {
             '/register': (context) => SignUp(),
             '/dashboard': (context) => Home(),
+            '/login': (context) => Login(),
           }),
     );
   }
