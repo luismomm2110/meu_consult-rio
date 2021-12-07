@@ -162,8 +162,8 @@ class _SignUpState extends State<SignUp> {
           email: _emailController.text, password: _passwordController.text);
       if (isDoctor) {
         _createDoctor();
+        Navigator.pushReplacementNamed(context, '/doctor_dashboard');
       }
-      Navigator.pushReplacementNamed(context, '/dashboard');
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
         print('The passaword provided is too weak');
@@ -176,7 +176,7 @@ class _SignUpState extends State<SignUp> {
   }
 
   void _createDoctor() {
-    Patient doctor = Patient(
+    Doctor doctor = Doctor(
         name: _nameController.text,
         email: _emailController.text,
         medicalId: 'CRM' + (Random().nextInt(900000) + 100000).toString());

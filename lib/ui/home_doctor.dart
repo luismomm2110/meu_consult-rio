@@ -5,20 +5,19 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:meu_consultorio/data/doctor_dao.dart';
 import 'package:meu_consultorio/data/patient_dao.dart';
 import 'package:meu_consultorio/data/user_dao.dart';
+import 'package:meu_consultorio/models/patient.dart';
 import 'package:provider/provider.dart';
-
 import '../models/chart.dart';
 import '../data/chart_dao.dart';
-import 'chart_widget.dart';
 
-class Home extends StatefulWidget {
-  const Home({Key? key}) : super(key: key);
+class HomeDoctor extends StatefulWidget {
+  const HomeDoctor({Key? key}) : super(key: key);
 
   @override
-  HomeState createState() => HomeState();
+  HomeDoctorState createState() => HomeDoctorState();
 }
 
-class HomeState extends State<Home> {
+class HomeDoctorState extends State<HomeDoctor> {
   final TextEditingController _chartController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   final auth = FirebaseAuth.instance;
@@ -30,6 +29,7 @@ class HomeState extends State<Home> {
     final chartDao = Provider.of<ChartDao>(context, listen: false);
     final userDao = Provider.of<UserDao>(context, listen: false);
     final doctorDao = Provider.of<DoctorDao>(context, listen: false);
+    final patientDao = PatientDao();
     email = userDao.email();
 
     return Scaffold(
@@ -50,6 +50,9 @@ class HomeState extends State<Home> {
         child: Column(
           children: [
             Row(
+              children: [getPatientList(patientDao)],
+            ),
+            Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Flexible(
@@ -62,7 +65,7 @@ class HomeState extends State<Home> {
                         _sendChart(chartDao);
                       },
                       decoration:
-                      const InputDecoration(hintText: 'Enter new recipe'),
+                          const InputDecoration(hintText: 'Enter new recipe'),
                     ),
                   ),
                 ),
@@ -93,38 +96,25 @@ class HomeState extends State<Home> {
     }
   }
 
-  Widget _getPatientList(PatientDao patientDao) {
-    return Expanded(
-      child: StreamBuilder<QuerySnapshot>(
+  StreamBuilder<QuerySnapshot> getPatientList(PatientDao patientDao) {
+    return StreamBuilder<QuerySnapshot>(
         stream: patientDao.getPatientStream(),
         builder: (context, snapshot) {
-          if (!snapshot.hasData)
+          if (!snapshot.hasData) {
             return const Center(child: LinearProgressIndicator());
-          return _buildList(context, snapshot.data!.docs);
-        },
-      ),
-    );
-  }
+          } else {
+            return DropdownButtonFormField(
+                items:
+                    snapshot.data!.docs.map<DropdownMenuItem<String>>((data) {
+              final patient = Patient.fromSnapshot(data);
 
-  Widget _buildList(BuildContext context, List<DocumentSnapshot>? snapshot) {
-    // 1
-    return ListView(
-      controller: _scrollController,
-      physics: const BouncingScrollPhysics(),
-      padding: const EdgeInsets.only(top: 20.0),
-      // 2
-      children: snapshot!.map((data) => _buildListItem(context, data)).toList(),
-    );
-  }
-
-  Widget _buildListItem(BuildContext context, DocumentSnapshot snapshot) {
-    // 1
-    final chart = Chart.fromSnapshot(snapshot);
-    // 2
-    return ChartWidget(
-      chart.text,
-      chart.date,
-    );
+              return new DropdownMenuItem<String>(
+                value: patient.email,
+                child: new Text(patient.name),
+              );
+            }).toList());
+          }
+        });
   }
 
   bool _canSendChart() => _chartController.text.length > 0;

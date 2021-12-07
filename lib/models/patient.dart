@@ -1,6 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:meu_consultorio/models/chart.dart';
+import 'package:json_annotation/json_annotation.dart';
 
+part 'patient_model.g.dart';
+
+@JsonSerializable
 class Patient {
   final String email;
   final String name;

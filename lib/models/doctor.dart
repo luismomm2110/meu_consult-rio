@@ -1,14 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:meu_consultorio/data/doctor_dao.dart';
 
-class Patient {
+class Doctor {
   final String email;
   final String name;
   final String medicalId;
   DocumentReference? reference;
 
-  Patient({required this.name, required this.email, required this.medicalId});
+  Doctor({required this.name, required this.email, required this.medicalId});
 
-  factory Patient.fromJson(Map<dynamic, dynamic> json) => Patient(
+  factory Doctor.fromJson(Map<dynamic, dynamic> json) => Doctor(
       name: json['name'] as String,
       medicalId: json['medicalId'] as String,
       email: json['email'] as String);
@@ -19,8 +20,8 @@ class Patient {
         'email': email,
       };
 
-  factory Patient.fromSnapshot(DocumentSnapshot snapshot) {
-    final doctor = Patient.fromJson(snapshot.data() as Map<String, dynamic>);
+  factory Doctor.fromSnapshot(DocumentSnapshot snapshot) {
+    final doctor = Doctor.fromJson(snapshot.data() as Map<String, dynamic>);
     doctor.reference = snapshot.reference;
     return doctor;
   }
