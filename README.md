@@ -6,9 +6,9 @@
 
 ***
 
-- Luis Antonio Momm Duarte
+- Luis Antonio Mamma Duarte
 - Matheus Ferreira
-- Santiago Nunes
+- Santiago Nicolas Fleitas Negreira
 
 ## Funcionalidades
 

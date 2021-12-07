@@ -43,15 +43,22 @@ class _SignUpState extends State<SignUp> {
           child: Column(
             children: [
               Row(
+                // mainAxisAlignment: MainAxisAlignment.center
                 children: [
                   Center(
-                    child: Text("Create your account"),
+                    child: Container(
+                      margin: const EdgeInsets.only(top: 20.0),
+                      child: Text("Create your account", style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 16.0,
+                      ))
+                    ),
                   ),
                 ],
               ),
               Row(
                 children: [
-                  const SizedBox(height: 80),
+                  const SizedBox(height: 60),
                   Expanded(
                     child: TextFormField(
                       decoration: const InputDecoration(
@@ -75,7 +82,7 @@ class _SignUpState extends State<SignUp> {
               ),
               Row(
                 children: [
-                  SizedBox(height: 20),
+                  SizedBox(height: 60),
                   Expanded(
                     child: TextFormField(
                       decoration: const InputDecoration(
@@ -99,7 +106,7 @@ class _SignUpState extends State<SignUp> {
               ),
               Row(
                 children: [
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 60),
                   Expanded(
                     child: TextFormField(
                       decoration: const InputDecoration(
@@ -122,7 +129,9 @@ class _SignUpState extends State<SignUp> {
               ),
               Row(
                 children: [
-                  const SizedBox(height: 40),
+                  const SizedBox(
+                      height: 80,
+                  ),
                   Checkbox(
                       value: this.isDoctor,
                       activeColor: Colors.black,
