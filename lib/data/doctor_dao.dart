@@ -5,7 +5,7 @@ class DoctorDao {
   final CollectionReference collection =
       FirebaseFirestore.instance.collection('doctors');
 
-  void saveDoctor(Doctor doctor) {
+  void saveDoctor(Patient doctor) {
     collection.add(doctor.toJson());
   }
 

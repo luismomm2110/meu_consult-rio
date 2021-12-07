@@ -176,7 +176,7 @@ class _SignUpState extends State<SignUp> {
   }
 
   void _createDoctor() {
-    Doctor doctor = Doctor(
+    Patient doctor = Patient(
         name: _nameController.text,
         email: _emailController.text,
         medicalId: 'CRM' + (Random().nextInt(900000) + 100000).toString());
