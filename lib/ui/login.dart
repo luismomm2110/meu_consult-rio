@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:meu_consultorio/ui/signup.dart';
+import 'package:meu_consultorio/data/doctor_dao.dart';
 import 'package:provider/provider.dart';
 import '../data/user_dao.dart';
 
@@ -18,8 +18,6 @@ class _LoginState extends State<Login> {
   final _passwordController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  bool isDoctor = false;
-
   @override
   void dispose() {
     _nameController.dispose();
@@ -31,6 +29,7 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     final userDao = Provider.of<UserDao>(context, listen: true);
+    final doctorDao = Provider.of<DoctorDao>(context, listen: false);
 
     return Scaffold(
       appBar: AppBar(
@@ -100,11 +99,13 @@ class _LoginState extends State<Login> {
                   const SizedBox(height: 20),
                   Expanded(
                     child: ElevatedButton(
-                      onPressed: () {
+                      child: const Text('Login'),
+                      onPressed: () async {
                         userDao.login(
                             _emailController.text, _passwordController.text);
+                        print(await doctorDao
+                            .isUserDoctor(_emailController.text));
                       },
-                      child: const Text('Login'),
                     ),
                   ),
                 ],

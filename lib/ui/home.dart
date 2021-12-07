@@ -2,13 +2,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:meu_consultorio/data/doctor_dao.dart';
 import 'package:meu_consultorio/data/user_dao.dart';
 import 'package:provider/provider.dart';
 
 import '../models/chart.dart';
 import '../data/chart_dao.dart';
 import 'chart_widget.dart';
-import 'login.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -32,7 +32,7 @@ class HomeState extends State<Home> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Olguens"),
+        title: const Text("MyClinic"),
         actions: [
           IconButton(
             onPressed: () {
@@ -99,7 +99,6 @@ class HomeState extends State<Home> {
         builder: (context, snapshot) {
           if (!snapshot.hasData)
             return const Center(child: LinearProgressIndicator());
-
           return _buildList(context, snapshot.data!.docs);
         },
       ),

@@ -45,7 +45,7 @@ class MyClinic extends StatelessWidget {
           home: Consumer<UserDao>(
             builder: (context, userDao, child) {
               if (userDao.isLoggedIn()) {
-                return const Home();
+                return const Login();
               } else {
                 return const Login();
               }
