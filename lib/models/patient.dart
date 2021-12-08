@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:meu_consultorio/data/patient_dao.dart';
 import 'package:meu_consultorio/models/chart.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -29,5 +30,10 @@ class Patient {
   factory Patient.fromSnapshot(DocumentSnapshot snapshot) {
     final patient = Patient.fromJson(snapshot.data() as Map<String, dynamic>);
     return patient;
+  }
+
+  static Future<Patient> fromEmail(String email) async {
+    final patientSnapshot = await PatientDao().getPatientSnapshotByEmail(email);
+    return Patient.fromSnapshot(patientSnapshot);
   }
 }

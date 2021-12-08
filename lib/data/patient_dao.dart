@@ -15,11 +15,26 @@ class PatientDao {
     return collection.snapshots();
   }
 
-  Future<Patient> getPatientByEmail(String email) async {
+  Future<void> updatePatient(Patient patient) async {
+    final patientReference = await _getPatientReferenceByEmail(patient.email);
+    patientReference.update(patient.toJson());
+  }
+
+  Future<DocumentReference<Object?>> _getPatientReferenceByEmail(
+      String email) async {
     final QuerySnapshot result =
         await collection.where('email', isEqualTo: email).get();
-    final patient = Patient.fromSnapshot(result.docs.first);
-    return patient;
+    final patientReference = result.docs.first.reference;
+    return patientReference;
+  }
+
+  Future<DocumentSnapshot<Object?>> getPatientSnapshotByEmail(
+      String email) async {
+    final QuerySnapshot result =
+        await collection.where('email', isEqualTo: email).get();
+    final patientSnapshot =
+        await result.docs.first.reference.snapshots().first;
+    return patientSnapshot;
   }
 
   Future<bool> isUserPatient(String email) async {

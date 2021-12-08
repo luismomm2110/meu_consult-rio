@@ -117,9 +117,9 @@ class HomeDoctorState extends State<HomeDoctor> {
         text: _chartController.text,
         date: DateTime.now(),
       );
-      final patient = await patientDao.getPatientByEmail(_value);
+      final patient = await Patient.fromEmail(_value);
       patient.addChart(chart);
-      patientDao.savePatient(patient);
+      patientDao.updatePatient(patient);
       _chartController.clear();
       setState(() {});
     }
