@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:meu_consultorio/data/doctor_dao.dart';
 
 class Doctor {
   final String email;

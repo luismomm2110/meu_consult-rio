@@ -142,7 +142,7 @@ class _SignUpState extends State<SignUp> {
                     child: ElevatedButton(
                       child: const Text('Sign Up'),
                       onPressed: () {
-                        doRegister();
+                        _doRegister();
                       },
                     ),
                   ),
@@ -156,17 +156,14 @@ class _SignUpState extends State<SignUp> {
     );
   }
 
-  Future<void> doRegister() async {
-    Doctor doctor = Doctor(
-        name: _nameController.text,
-        email: _emailController.text,
-        medicalId: 'CRM' + (Random().nextInt(900000) + 100000).toString());
-    DoctorDao doctorDao = DoctorDao();
-    doctorDao.saveDoctor(doctor);
+  Future<void> _doRegister() async {
     try {
       await auth.createUserWithEmailAndPassword(
           email: _emailController.text, password: _passwordController.text);
-      Navigator.pushReplacementNamed(context, '/dashboard');
+      if (isDoctor) {
+        _createDoctor();
+        Navigator.pushReplacementNamed(context, '/doctor_dashboard');
+      }
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
         print('The passaword provided is too weak');
@@ -176,5 +173,14 @@ class _SignUpState extends State<SignUp> {
     } catch (e) {
       print(e);
     }
+  }
+
+  void _createDoctor() {
+    Doctor doctor = Doctor(
+        name: _nameController.text,
+        email: _emailController.text,
+        medicalId: 'CRM' + (Random().nextInt(900000) + 100000).toString());
+    DoctorDao doctorDao = DoctorDao();
+    doctorDao.saveDoctor(doctor);
   }
 }
