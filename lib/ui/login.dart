@@ -103,8 +103,9 @@ class _LoginState extends State<Login> {
                       onPressed: () async {
                         userDao.login(
                             _emailController.text, _passwordController.text);
-                        print(await doctorDao
-                            .isUserDoctor(_emailController.text));
+                        if (await doctorDao.isUserDoctor(_emailController.text)) {
+                        Navigator.pushReplacementNamed(context, '/doctor_dashboard');
+                        }
                       },
                     ),
                   ),

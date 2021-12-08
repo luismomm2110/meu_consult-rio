@@ -21,6 +21,7 @@ class MyClinic extends StatelessWidget {
   MyClinic({Key? key}) : super(key: key);
 
   final userDao = UserDao();
+  final doctorDao = DoctorDao();
 
   @override
   Widget build(BuildContext context) {
@@ -43,15 +44,17 @@ class MyClinic extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           title: 'MyCLinic',
           theme: ThemeData(primaryColor: Colors.white),
-          home: Consumer<UserDao>(
-            builder: (context, userDao, child) {
-              if (userDao.isLoggedIn()) {
-                return const Login();
+          home: Consumer<UserDao>(builder: (context, userDao, child) {
+            if (userDao.isLoggedIn()) {
+              if (_checkIfDoctor()) {
+                return const HomeDoctor();
               } else {
                 return const Login();
               }
-            },
-          ),
+            } else {
+              return const Login();
+            }
+          }),
           routes: {
             '/register': (context) => SignUp(),
             '/dashboard': (context) => Home(),
@@ -59,5 +62,10 @@ class MyClinic extends StatelessWidget {
             '/doctor_dashboard': (context) => HomeDoctor(),
           }),
     );
+  }
+
+  Future<bool> _checkIfDoctor() async {
+    final isDoctor =  await doctorDao.isUserDoctor(userDao.email()!);
+    return isDoctor;
   }
 }
