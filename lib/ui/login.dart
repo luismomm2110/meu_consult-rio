@@ -1,9 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:meu_consultorio/data/doctor_dao.dart';
-import 'package:provider/provider.dart';
-import '../data/user_dao.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -17,6 +16,7 @@ class _LoginState extends State<Login> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final auth = FirebaseAuth.instance;
 
   @override
   void dispose() {
@@ -28,9 +28,6 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
-    final userDao = Provider.of<UserDao>(context, listen: true);
-    final doctorDao = Provider.of<DoctorDao>(context, listen: false);
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('My Clinic'),
@@ -99,15 +96,10 @@ class _LoginState extends State<Login> {
                   const SizedBox(height: 20),
                   Expanded(
                     child: ElevatedButton(
-                      child: const Text('Login'),
-                      onPressed: () async {
-                        userDao.login(
-                            _emailController.text, _passwordController.text);
-                        if (await doctorDao.isUserDoctor(_emailController.text)) {
-                        Navigator.pushReplacementNamed(context, '/doctor_dashboard');
-                        }
-                      },
-                    ),
+                        child: const Text('Login'),
+                        onPressed: () async {
+                          _doLogin();
+                        }),
                   ),
                 ],
               ),
@@ -129,5 +121,25 @@ class _LoginState extends State<Login> {
         ),
       ),
     );
+  }
+
+  Future<void> _doLogin() async {
+    try {
+      await auth.signInWithEmailAndPassword(
+          email: _emailController.text, password: _passwordController.text);
+      DoctorDao doctorDao = DoctorDao();
+      final isDoctor = await doctorDao.isUserDoctor(_emailController.text);
+      if (isDoctor) {
+        Navigator.pushReplacementNamed(context, '/doctor_dashboard');
+      }
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'weak-password') {
+        print('Password too weak');
+      } else if (e.code == 'email-already-in-use') {
+        print('The account already exists for that email.');
+      }
+    } catch (e) {
+      print(e);
+    }
   }
 }

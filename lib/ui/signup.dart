@@ -142,7 +142,7 @@ class _SignUpState extends State<SignUp> {
                     child: ElevatedButton(
                       child: const Text('Sign Up'),
                       onPressed: () {
-                        doRegister();
+                        _doRegister();
                       },
                     ),
                   ),
@@ -156,7 +156,7 @@ class _SignUpState extends State<SignUp> {
     );
   }
 
-  Future<void> doRegister() async {
+  Future<void> _doRegister() async {
     try {
       await auth.createUserWithEmailAndPassword(
           email: _emailController.text, password: _passwordController.text);

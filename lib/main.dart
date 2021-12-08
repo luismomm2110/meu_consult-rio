@@ -45,15 +45,7 @@ class MyClinic extends StatelessWidget {
           title: 'MyCLinic',
           theme: ThemeData(primaryColor: Colors.white),
           home: Consumer<UserDao>(builder: (context, userDao, child) {
-            if (userDao.isLoggedIn()) {
-              if (_checkIfDoctor()) {
-                return const HomeDoctor();
-              } else {
-                return const Login();
-              }
-            } else {
-              return const Login();
-            }
+            return const Login();
           }),
           routes: {
             '/register': (context) => SignUp(),
@@ -65,7 +57,7 @@ class MyClinic extends StatelessWidget {
   }
 
   Future<bool> _checkIfDoctor() async {
-    final isDoctor =  await doctorDao.isUserDoctor(userDao.email()!);
+    final isDoctor = await doctorDao.isUserDoctor(userDao.email()!);
     return isDoctor;
   }
 }
