@@ -2,13 +2,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:meu_consultorio/data/doctor_dao.dart';
 import 'package:meu_consultorio/data/patient_dao.dart';
 import 'package:meu_consultorio/data/user_dao.dart';
 import 'package:meu_consultorio/models/patient.dart';
 import 'package:provider/provider.dart';
 import '../models/chart.dart';
-import '../data/chart_dao.dart';
 
 class HomeDoctor extends StatefulWidget {
   const HomeDoctor({Key? key}) : super(key: key);
@@ -22,13 +20,12 @@ class HomeDoctorState extends State<HomeDoctor> {
   final ScrollController _scrollController = ScrollController();
   final auth = FirebaseAuth.instance;
   String? email;
-  String _value = "";
+  String _patientEmail = "";
   var currentPatient;
 
   @override
   Widget build(BuildContext context) {
     WidgetsBinding.instance!.addPostFrameCallback((_) => _scrollToBottom());
-    final chartDao = Provider.of<ChartDao>(context, listen: false);
     final userDao = Provider.of<UserDao>(context, listen: false);
     final patientDao = PatientDao();
     email = userDao.email();
@@ -68,7 +65,7 @@ class HomeDoctorState extends State<HomeDoctor> {
                         _sendPatient(patientDao);
                       },
                       decoration:
-                          const InputDecoration(hintText: 'Enter new recipe'),
+                      const InputDecoration(hintText: 'Enter new recipe'),
                     ),
                   ),
                 ),
@@ -103,21 +100,23 @@ class HomeDoctorState extends State<HomeDoctor> {
                   child: Text(patient.name),
                 );
               }).toList(),
-              onChanged: (val) => setState(() {
-                _value = val!;
-              }),
+              onChanged: (val) =>
+                  setState(() {
+                    _patientEmail = val!;
+                  }),
             );
           }
         });
   }
 
   void _sendPatient(PatientDao patientDao) async {
+    print(_canSendChart());
     if (_canSendChart()) {
       final chart = Chart(
         text: _chartController.text,
         date: DateTime.now(),
       );
-      final patient = await Patient.fromEmail(_value);
+      final patient = await Patient.fromEmail(_patientEmail);
       patient.addChart(chart);
       patientDao.updatePatient(patient);
       _chartController.clear();
@@ -125,7 +124,8 @@ class HomeDoctorState extends State<HomeDoctor> {
     }
   }
 
-  bool _canSendChart() => _chartController.text.length > 0;
+  bool _canSendChart() =>
+      _chartController.text.length > 0 && _patientEmail != "";
 
   void logout() async {
     await auth.signOut();
