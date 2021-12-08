@@ -13,6 +13,7 @@ class DoctorDao {
     return collection.snapshots();
   }
 
+
   Future<bool> isUserDoctor(String email) async {
     final QuerySnapshot result = await collection
         .where('email', isEqualTo: email)

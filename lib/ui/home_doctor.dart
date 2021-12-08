@@ -22,13 +22,14 @@ class HomeDoctorState extends State<HomeDoctor> {
   final ScrollController _scrollController = ScrollController();
   final auth = FirebaseAuth.instance;
   String? email;
+  String _value = "";
+  var currentPatient;
 
   @override
   Widget build(BuildContext context) {
     WidgetsBinding.instance!.addPostFrameCallback((_) => _scrollToBottom());
     final chartDao = Provider.of<ChartDao>(context, listen: false);
     final userDao = Provider.of<UserDao>(context, listen: false);
-    final doctorDao = Provider.of<DoctorDao>(context, listen: false);
     final patientDao = PatientDao();
     email = userDao.email();
 
@@ -49,9 +50,11 @@ class HomeDoctorState extends State<HomeDoctor> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            Row(
-              children: [getPatientList(patientDao)],
-            ),
+            Row(children: [
+              Expanded(
+                child: listOfPatients(patientDao),
+              ),
+            ]),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -62,7 +65,7 @@ class HomeDoctorState extends State<HomeDoctor> {
                       keyboardType: TextInputType.text,
                       controller: _chartController,
                       onSubmitted: (input) {
-                        _sendChart(chartDao);
+                        _sendPatient(patientDao);
                       },
                       decoration:
                           const InputDecoration(hintText: 'Enter new recipe'),
@@ -74,7 +77,7 @@ class HomeDoctorState extends State<HomeDoctor> {
                         ? CupertinoIcons.arrow_right_circle_fill
                         : CupertinoIcons.arrow_right_circle),
                     onPressed: () {
-                      _sendChart(chartDao);
+                      _sendPatient(patientDao);
                     })
               ],
             ),
@@ -84,37 +87,42 @@ class HomeDoctorState extends State<HomeDoctor> {
     );
   }
 
-  void _sendChart(ChartDao chartDao) {
-    if (_canSendChart()) {
-      final chart = Chart(
-        text: _chartController.text,
-        date: DateTime.now(),
-      );
-      chartDao.saveChart(chart);
-      _chartController.clear();
-      setState(() {});
-    }
-  }
-
-  StreamBuilder<QuerySnapshot> getPatientList(PatientDao patientDao) {
+  StreamBuilder<QuerySnapshot<Object?>> listOfPatients(PatientDao patientDao) {
     return StreamBuilder<QuerySnapshot>(
         stream: patientDao.getPatientStream(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return const Center(child: LinearProgressIndicator());
           } else {
-            return DropdownButtonFormField(
-                items:
-                    snapshot.data!.docs.map<DropdownMenuItem<String>>((data) {
-              final patient = Patient.fromSnapshot(data);
-
-              return new DropdownMenuItem<String>(
-                value: patient.email,
-                child: new Text(patient.name),
-              );
-            }).toList());
+            return DropdownButtonFormField<String>(
+              value: null,
+              items: snapshot.data!.docs.map<DropdownMenuItem<String>>((data) {
+                final patient = Patient.fromSnapshot(data);
+                return DropdownMenuItem<String>(
+                  value: patient.email,
+                  child: Text(patient.name),
+                );
+              }).toList(),
+              onChanged: (val) => setState(() {
+                _value = val!;
+              }),
+            );
           }
         });
+  }
+
+  void _sendPatient(PatientDao patientDao) async {
+    if (_canSendChart()) {
+      final chart = Chart(
+        text: _chartController.text,
+        date: DateTime.now(),
+      );
+      final patient = await patientDao.getPatientByEmail(_value);
+      patient.addChart(chart);
+      patientDao.savePatient(patient);
+      _chartController.clear();
+      setState(() {});
+    }
   }
 
   bool _canSendChart() => _chartController.text.length > 0;

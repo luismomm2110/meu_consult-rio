@@ -2,7 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:meu_consultorio/data/doctor_dao.dart';
 import 'package:meu_consultorio/data/user_dao.dart';
 import 'package:provider/provider.dart';
 
