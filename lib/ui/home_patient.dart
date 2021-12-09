@@ -2,13 +2,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:meu_consultorio/data/doctor_dao.dart';
 import 'package:meu_consultorio/data/patient_dao.dart';
 import 'package:meu_consultorio/data/user_dao.dart';
+import 'package:meu_consultorio/models/doctor.dart';
 import 'package:provider/provider.dart';
-
 import '../models/patient.dart';
 import '../models/chart.dart';
-import '../data/chart_dao.dart';
 import 'chart_widget.dart';
 
 class HomePatient extends StatefulWidget {
@@ -22,6 +22,7 @@ class HomePatientState extends State<HomePatient> {
   final ScrollController _scrollController = ScrollController();
   final auth = FirebaseAuth.instance;
   String? email;
+  String _doctorEmail = "";
 
   @override
   Widget build(BuildContext context) {
@@ -29,6 +30,7 @@ class HomePatientState extends State<HomePatient> {
     final userDao = Provider.of<UserDao>(context, listen: false);
     final patientDao = Provider.of<PatientDao>(context, listen: false);
     email = userDao.email();
+    final doctorDao = DoctorDao();
 
     return Scaffold(
       appBar: AppBar(
@@ -47,6 +49,13 @@ class HomePatientState extends State<HomePatient> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
+            Row(
+              children: [
+                Expanded(
+                  child: listOfDoctors(doctorDao),
+                ),
+              ],
+            ),
             _getChartList(patientDao, userDao),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -102,6 +111,30 @@ class HomePatientState extends State<HomePatient> {
       chart.doctorName,
       chart.medicalID,
     );
+  }
+
+  StreamBuilder<QuerySnapshot<Object?>> listOfDoctors(DoctorDao doctorDao) {
+    return StreamBuilder<QuerySnapshot>(
+        stream: doctorDao.getDoctorStream(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return const Center(child: LinearProgressIndicator());
+          } else {
+            return DropdownButtonFormField<String>(
+              value: null,
+              items: snapshot.data!.docs.map<DropdownMenuItem<String>>((data) {
+                final doctor = Doctor.fromSnapshot(data);
+                return DropdownMenuItem<String>(
+                  value: doctor.email,
+                  child: Text(doctor.name),
+                );
+              }).toList(),
+              onChanged: (val) => setState(() {
+                _doctorEmail = val!;
+              }),
+            );
+          }
+        });
   }
 
   void logout() async {

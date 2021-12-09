@@ -47,9 +47,6 @@ class HomeDoctorState extends State<HomeDoctor> {
         child: Column(
           children: [
             Row(children: [
-              Expanded(
-                child: listOfPatients(patientDao),
-              ),
             ]),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
