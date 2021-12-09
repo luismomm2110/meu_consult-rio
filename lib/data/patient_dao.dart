@@ -32,8 +32,7 @@ class PatientDao {
       String email) async {
     final QuerySnapshot result =
         await collection.where('email', isEqualTo: email).get();
-    final patientSnapshot =
-        await result.docs.first.reference.snapshots().first;
+    final patientSnapshot = await result.docs.first.reference.snapshots().first;
     return patientSnapshot;
   }
 
