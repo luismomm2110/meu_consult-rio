@@ -98,7 +98,16 @@ class _LoginState extends State<Login> {
                     child: ElevatedButton(
                         child: const Text('Login'),
                         onPressed: () async {
-                          _doLogin();
+                          String? loginError = await _doLogin();
+                          print(loginError);
+                          if (loginError != null) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(loginError),
+                                duration: Duration(seconds: 3),
+                              ),
+                            );
+                          }
                         }),
                   ),
                 ],
@@ -123,7 +132,9 @@ class _LoginState extends State<Login> {
     );
   }
 
-  Future<void> _doLogin() async {
+  Future<String?> _doLogin() async {
+    var errorMessage;
+
     try {
       await auth.signInWithEmailAndPassword(
           email: _emailController.text, password: _passwordController.text);
@@ -135,13 +146,20 @@ class _LoginState extends State<Login> {
         Navigator.pushReplacementNamed(context, "/patient_dashboard");
       }
     } on FirebaseAuthException catch (e) {
-      if (e.code == 'weak-password') {
-        print('Password too weak');
-      } else if (e.code == 'email-already-in-use') {
-        print('The account already exists for that email.');
+      switch (e.code) {
+        case 'user-not-found':
+          errorMessage = 'User not Found';
+          break;
+        case 'wrong-password':
+          errorMessage = 'Invalid Password';
+          break;
+        case 'invalid-email':
+          errorMessage = 'Invalid email';
+          break;
+        default:
+          errorMessage = "Error";
       }
-    } catch (e) {
-      print(e);
     }
+    if (errorMessage != null) return errorMessage;
   }
 }
