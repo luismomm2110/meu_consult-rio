@@ -68,7 +68,7 @@ class HomePatientState extends State<HomePatient> {
     return FutureBuilder<Patient>(
       builder: (context, snapshot) {
         if (snapshot.hasData)
-          return Expanded(child: _buildList(context, snapshot!.data!.charts));
+          return Expanded(child: _buildList(context, snapshot.data!.charts));
         return const Center(child: LinearProgressIndicator());
       },
       future: _getPatient(patientDao, userDao),
@@ -82,11 +82,16 @@ class HomePatientState extends State<HomePatient> {
   }
 
   Widget _buildList(BuildContext context, List<Chart>? charts) {
+    if (charts == null) {
+      return Center(
+        child: Text("No recipes"),
+      );
+    }
     return ListView(
       controller: _scrollController,
       physics: const BouncingScrollPhysics(),
       padding: const EdgeInsets.only(top: 20.0),
-      children: charts!.map((data) => _buildListItem(context, data!)).toList(),
+      children: charts.map((data) => _buildListItem(context, data)).toList(),
     );
   }
 

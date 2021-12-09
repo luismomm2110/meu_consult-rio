@@ -159,6 +159,7 @@ class _SignUpState extends State<SignUp> {
   }
 
   Future<void> _doRegister() async {
+    print(isDoctor);
     try {
       await auth.createUserWithEmailAndPassword(
           email: _emailController.text, password: _passwordController.text);

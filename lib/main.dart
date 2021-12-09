@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:meu_consultorio/data/doctor_dao.dart';
-import 'package:meu_consultorio/ui/home.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:meu_consultorio/ui/home_doctor.dart';
 import 'package:meu_consultorio/ui/home_patient.dart';
@@ -55,7 +54,6 @@ class MyClinic extends StatelessWidget {
           }),
           routes: {
             '/register': (context) => SignUp(),
-            '/dashboard': (context) => Home(),
             '/login': (context) => Login(),
             '/doctor_dashboard': (context) => HomeDoctor(),
             '/patient_dashboard': (context) => HomePatient(),
