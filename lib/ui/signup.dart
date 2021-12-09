@@ -5,7 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:meu_consultorio/data/doctor_dao.dart';
+import 'package:meu_consultorio/data/patient_dao.dart';
 import 'package:meu_consultorio/models/doctor.dart';
+import 'package:meu_consultorio/models/patient.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({Key? key}) : super(key: key);
@@ -163,6 +165,9 @@ class _SignUpState extends State<SignUp> {
       if (isDoctor) {
         _createDoctor();
         Navigator.pushReplacementNamed(context, '/doctor_dashboard');
+      } else {
+        _createPatient();
+        Navigator.pushReplacementNamed(context, "/patient_dashboard");
       }
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
@@ -182,5 +187,14 @@ class _SignUpState extends State<SignUp> {
         medicalId: 'CRM' + (Random().nextInt(900000) + 100000).toString());
     DoctorDao doctorDao = DoctorDao();
     doctorDao.saveDoctor(doctor);
+  }
+
+  void _createPatient() {
+    Patient patient = Patient(
+      name: _nameController.text,
+      email: _emailController.text,
+    );
+    PatientDao patientDao = PatientDao();
+    patientDao.savePatient(patient);
   }
 }

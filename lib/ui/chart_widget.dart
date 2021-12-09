@@ -4,8 +4,12 @@ import 'package:intl/intl.dart';
 class ChartWidget extends StatelessWidget {
   final String chart;
   final DateTime date;
+  final String doctorName;
+  final String medicalId;
 
-  const ChartWidget(this.chart, this.date, {Key? key}) : super(key: key);
+  const ChartWidget(this.chart, this.date, this.doctorName, this.medicalId,
+      {Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
