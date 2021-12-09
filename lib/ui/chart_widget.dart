@@ -49,13 +49,18 @@ class ChartWidget extends StatelessWidget {
                       ],
                     ))),
             Padding(
-              padding: const EdgeInsets.only(top: 4),
-              child: Align(
-                  alignment: Alignment.topRight,
-                  child: Text(
-                    DateFormat('yyyy-MM-dd, kk:mma').format(date).toString(),
+              padding: const EdgeInsets.only(top: 8, left: 12, right: 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('$doctorName $medicalId',
+                      style: TextStyle(fontWeight: FontWeight.bold)),
+                  Text("Validade: " +
+                    DateFormat('dd/MM/yyyy').format(date).toString(),
                     style: const TextStyle(color: Colors.grey),
-                  )),
+                  ),
+                ],
+              ),
             ),
           ],
         ));

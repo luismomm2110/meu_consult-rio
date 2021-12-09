@@ -64,7 +64,7 @@ class HomeDoctorState extends State<HomeDoctor> {
                         _sendPatient(patientDao, userDao);
                       },
                       decoration:
-                          const InputDecoration(hintText: 'Enter new recipe'),
+                          const InputDecoration(hintText: 'Enter new prescription'),
                     ),
                   ),
                 ),

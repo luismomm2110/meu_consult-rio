@@ -131,6 +131,8 @@ class _LoginState extends State<Login> {
       final isDoctor = await doctorDao.isUserDoctor(_emailController.text);
       if (isDoctor) {
         Navigator.pushReplacementNamed(context, '/doctor_dashboard');
+      } else {
+        Navigator.pushReplacementNamed(context, "/patient_dashboard");
       }
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {

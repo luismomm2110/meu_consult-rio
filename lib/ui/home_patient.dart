@@ -67,9 +67,9 @@ class HomePatientState extends State<HomePatient> {
   Widget _getChartList(PatientDao patientDao, UserDao userDao) {
     return FutureBuilder<Patient>(
       builder: (context, snapshot) {
-        if (snapshot.hasData)
-          return Expanded(child: _buildList(context, snapshot.data!.charts));
-        return const Center(child: LinearProgressIndicator());
+        if (!snapshot.hasData)
+          return const Center(child: LinearProgressIndicator());
+        return Expanded(child: _buildList(context, snapshot.data!.charts));
       },
       future: _getPatient(patientDao, userDao),
     );
@@ -99,8 +99,8 @@ class HomePatientState extends State<HomePatient> {
     return ChartWidget(
       chart.text,
       chart.date,
-      chart.medicalID,
       chart.doctorName,
+      chart.medicalID,
     );
   }
 
