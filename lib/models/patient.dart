@@ -36,4 +36,5 @@ class Patient {
     final patientSnapshot = await PatientDao().getPatientSnapshotByEmail(email);
     return Patient.fromSnapshot(patientSnapshot);
   }
+
 }

@@ -27,4 +27,13 @@ class Doctor {
     final patientSnapshot = await DoctorDao().getDoctorSnapshotByEmail(email);
     return Doctor.fromSnapshot(patientSnapshot);
   }
+
+  addAppointments(Appointment appointment) {
+    if (this.appointments == null) {
+      this.appointments = <Appointment>[];
+      this.appointments!.add(appointment);
+    } else {
+      this.appointments!.add(appointment);
+    }
+  }
 }

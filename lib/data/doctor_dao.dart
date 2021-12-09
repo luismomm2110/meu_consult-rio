@@ -13,6 +13,11 @@ class DoctorDao {
     return collection.snapshots();
   }
 
+  Future<void> updateDoctor(Doctor doctor) async {
+    final doctorReference = await _getDoctorReferenceByEmail(doctor.email);
+    doctorReference.update(doctor.toJson());
+  }
+
   Future<DocumentReference<Object?>> _getDoctorReferenceByEmail(
       String email) async {
     final QuerySnapshot result =

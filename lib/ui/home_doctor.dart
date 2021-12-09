@@ -2,8 +2,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:meu_consultorio/data/doctor_dao.dart';
 import 'package:meu_consultorio/data/patient_dao.dart';
 import 'package:meu_consultorio/data/user_dao.dart';
+import 'package:meu_consultorio/models/appointment.dart';
 import 'package:meu_consultorio/models/doctor.dart';
 import 'package:meu_consultorio/models/patient.dart';
 import 'package:provider/provider.dart';
@@ -47,6 +49,9 @@ class HomeDoctorState extends State<HomeDoctor> {
         child: Column(
           children: [
             Row(children: [
+              Expanded(
+                child: listOfPatients(patientDao),
+              ),
             ]),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -86,6 +91,35 @@ class HomeDoctorState extends State<HomeDoctor> {
       ),
     );
   }
+
+  Widget _getAppointmentList(DoctorDao doctorDao, UserDao userDao) {
+    return FutureBuilder<Doctor>(
+      builder: (context, snapshot) {
+        if (!snapshot.hasData)
+          return const Center(child: LinearProgressIndicator());
+        return Expanded(child: _buildList(context, snapshot.data!.appointments));
+      },
+      future: _getDoctor(doctorDao, userDao),
+    );
+  }
+
+  Widget _buildList(BuildContext context, List<Appointment>? appointments) {
+    if (appointments == null) {
+      return Center(
+        child: Text("No appointments with patients"),
+      );
+    }
+    return ListView(
+      controller: _scrollController,
+      physics: const BouncingScrollPhysics(),
+      padding: const EdgeInsets.only(top: 20.0),
+      children: charts.map((data) => _buildListItem(context, data)).toList(),
+    );
+  }
+
+
+
+
 
   StreamBuilder<QuerySnapshot<Object?>> listOfPatients(PatientDao patientDao) {
     return StreamBuilder<QuerySnapshot>(
