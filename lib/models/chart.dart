@@ -7,8 +7,10 @@ part 'chart.g.dart';
 class Chart {
   final String text;
   final DateTime date;
+  final String doctorName;
+  final String medicalID;
 
-  Chart({required this.text, required this.date});
+  Chart({required this.doctorName, required this.medicalID, required this.text, required this.date});
 
   factory Chart.fromJson(Map<String, dynamic> json) => _$ChartFromJson(json);
 

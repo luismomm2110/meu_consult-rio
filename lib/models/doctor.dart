@@ -1,28 +1,28 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:json_annotation/json_annotation.dart';
 import 'package:meu_consultorio/data/doctor_dao.dart';
 
+part 'doctor.g.dart';
+
+@JsonSerializable()
 class Doctor {
   final String email;
   final String name;
   final String medicalId;
-  DocumentReference? reference;
 
   Doctor({required this.name, required this.email, required this.medicalId});
 
-  factory Doctor.fromJson(Map<dynamic, dynamic> json) => Doctor(
-      name: json['name'] as String,
-      medicalId: json['medicalId'] as String,
-      email: json['email'] as String);
+  factory Doctor.fromJson(Map<String, dynamic> json) => _$DoctorFromJson(json);
 
-  Map<String, dynamic> toJson() => <String, dynamic>{
-        'date': name,
-        'medicalId': medicalId,
-        'email': email,
-      };
+  Map<String, dynamic> toJson() => _$DoctorToJson(this);
 
   factory Doctor.fromSnapshot(DocumentSnapshot snapshot) {
     final doctor = Doctor.fromJson(snapshot.data() as Map<String, dynamic>);
-    doctor.reference = snapshot.reference;
     return doctor;
+  }
+
+  static Future<Doctor> fromEmail(String email) async {
+    final patientSnapshot = await DoctorDao().getDoctorSnapshotByEmail(email);
+    return Doctor.fromSnapshot(patientSnapshot);
   }
 }

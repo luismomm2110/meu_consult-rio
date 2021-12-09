@@ -84,6 +84,8 @@ class HomeState extends State<Home> {
       final chart = Chart(
         text: _chartController.text,
         date: DateTime.now(),
+        medicalID: '',
+        doctorName: '',
       );
       chartDao.saveChart(chart);
       _chartController.clear();

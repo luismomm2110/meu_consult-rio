@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:meu_consultorio/data/patient_dao.dart';
 import 'package:meu_consultorio/data/user_dao.dart';
+import 'package:meu_consultorio/models/doctor.dart';
 import 'package:meu_consultorio/models/patient.dart';
 import 'package:provider/provider.dart';
 import '../models/chart.dart';
@@ -19,16 +20,14 @@ class HomeDoctorState extends State<HomeDoctor> {
   final TextEditingController _chartController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   final auth = FirebaseAuth.instance;
-  String? email;
   String _patientEmail = "";
-  var currentPatient;
+  String? email;
 
   @override
   Widget build(BuildContext context) {
     WidgetsBinding.instance!.addPostFrameCallback((_) => _scrollToBottom());
     final userDao = Provider.of<UserDao>(context, listen: false);
     final patientDao = PatientDao();
-    email = userDao.email();
 
     return Scaffold(
       appBar: AppBar(
@@ -62,10 +61,10 @@ class HomeDoctorState extends State<HomeDoctor> {
                       keyboardType: TextInputType.text,
                       controller: _chartController,
                       onSubmitted: (input) {
-                        _sendPatient(patientDao);
+                        _sendPatient(patientDao, userDao);
                       },
                       decoration:
-                      const InputDecoration(hintText: 'Enter new recipe'),
+                          const InputDecoration(hintText: 'Enter new recipe'),
                     ),
                   ),
                 ),
@@ -74,7 +73,7 @@ class HomeDoctorState extends State<HomeDoctor> {
                         ? CupertinoIcons.arrow_right_circle_fill
                         : CupertinoIcons.arrow_right_circle),
                     onPressed: () {
-                      _sendPatient(patientDao);
+                      _sendPatient(patientDao, userDao);
                     })
               ],
             ),
@@ -100,22 +99,23 @@ class HomeDoctorState extends State<HomeDoctor> {
                   child: Text(patient.name),
                 );
               }).toList(),
-              onChanged: (val) =>
-                  setState(() {
-                    _patientEmail = val!;
-                  }),
+              onChanged: (val) => setState(() {
+                _patientEmail = val!;
+              }),
             );
           }
         });
   }
 
-  void _sendPatient(PatientDao patientDao) async {
-    print(_canSendChart());
+  void _sendPatient(PatientDao patientDao, UserDao userDao) async {
+    final email = userDao.email();
     if (_canSendChart()) {
+      final doctor = await Doctor.fromEmail(email!);
       final chart = Chart(
-        text: _chartController.text,
-        date: DateTime.now(),
-      );
+          text: _chartController.text,
+          date: DateTime.now(),
+          medicalID: doctor.medicalId,
+          doctorName: doctor.name);
       final patient = await Patient.fromEmail(_patientEmail);
       patient.addChart(chart);
       patientDao.updatePatient(patient);

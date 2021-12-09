@@ -7,6 +7,8 @@ part of 'chart.dart';
 // **************************************************************************
 
 Chart _$ChartFromJson(Map<String, dynamic> json) => Chart(
+      doctorName: json['doctorName'] as String,
+      medicalID: json['medicalID'] as String,
       text: json['text'] as String,
       date: DateTime.parse(json['date'] as String),
     );
@@ -14,4 +16,6 @@ Chart _$ChartFromJson(Map<String, dynamic> json) => Chart(
 Map<String, dynamic> _$ChartToJson(Chart instance) => <String, dynamic>{
       'text': instance.text,
       'date': instance.date.toIso8601String(),
+      'doctorName': instance.doctorName,
+      'medicalID': instance.medicalID,
     };
