@@ -30,6 +30,7 @@ class _LoginState extends State<Login> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.teal,
         title: const Text('My Clinic'),
       ),
       body: Padding(
@@ -97,6 +98,9 @@ class _LoginState extends State<Login> {
                   Expanded(
                     child: ElevatedButton(
                         child: const Text('Login'),
+                        style: ElevatedButton.styleFrom(
+                            primary: Colors.teal
+                        ),
                         onPressed: () async {
                           _doLogin();
                         }),
@@ -109,6 +113,9 @@ class _LoginState extends State<Login> {
                   Expanded(
                     child: ElevatedButton(
                         child: const Text(r'Don"t have a account? Sign Up'),
+                        style: ElevatedButton.styleFrom(
+                            primary: Colors.teal
+                        ),
                         onPressed: () {
                           Navigator.pushReplacementNamed(context, '/register');
                         }),

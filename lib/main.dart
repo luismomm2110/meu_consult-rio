@@ -42,7 +42,7 @@ class MyClinic extends StatelessWidget {
       ],
       child: MaterialApp(
           debugShowCheckedModeBanner: false,
-          title: 'MyCLinic',
+          title: 'MyClinic',
           theme: ThemeData(primaryColor: Colors.white),
           home: Consumer<UserDao>(builder: (context, userDao, child) {
             return const Login();
