@@ -63,8 +63,8 @@ class HomeDoctorState extends State<HomeDoctor> {
                       onSubmitted: (input) {
                         _sendPatient(patientDao, userDao);
                       },
-                      decoration:
-                          const InputDecoration(hintText: 'Enter new prescription'),
+                      decoration: const InputDecoration(
+                          hintText: 'Enter new prescription'),
                     ),
                   ),
                 ),
@@ -73,7 +73,14 @@ class HomeDoctorState extends State<HomeDoctor> {
                         ? CupertinoIcons.arrow_right_circle_fill
                         : CupertinoIcons.arrow_right_circle),
                     onPressed: () {
-                      _sendPatient(patientDao, userDao);
+                      if (_canSendChart()) {
+                        _sendPatient(patientDao, userDao);
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Text("Check if there's a empty field"),
+                          duration: Duration(seconds: 1),
+                        ));
+                      }
                     })
               ],
             ),
@@ -109,19 +116,17 @@ class HomeDoctorState extends State<HomeDoctor> {
 
   void _sendPatient(PatientDao patientDao, UserDao userDao) async {
     final email = userDao.email();
-    if (_canSendChart()) {
-      final doctor = await Doctor.fromEmail(email!);
-      final chart = Chart(
-          text: _chartController.text,
-          date: DateTime.now(),
-          medicalID: doctor.medicalId,
-          doctorName: doctor.name);
-      final patient = await Patient.fromEmail(_patientEmail);
-      patient.addChart(chart);
-      patientDao.updatePatient(patient);
-      _chartController.clear();
-      setState(() {});
-    }
+    final doctor = await Doctor.fromEmail(email!);
+    final chart = Chart(
+        text: _chartController.text,
+        date: DateTime.now(),
+        medicalID: doctor.medicalId,
+        doctorName: doctor.name);
+    final patient = await Patient.fromEmail(_patientEmail);
+    patient.addChart(chart);
+    patientDao.updatePatient(patient);
+    _chartController.clear();
+    setState(() {});
   }
 
   bool _canSendChart() =>

@@ -142,11 +142,18 @@ class _SignUpState extends State<SignUp> {
                   const SizedBox(height: 20),
                   Expanded(
                     child: ElevatedButton(
-                      child: const Text('Sign Up'),
-                      onPressed: () {
-                        _doRegister();
-                      },
-                    ),
+                        child: const Text('Sign Up'),
+                        onPressed: () async {
+                          String? registerError = await _doRegister();
+                          if (registerError != null) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(registerError),
+                                duration: Duration(seconds: 1),
+                              ),
+                            );
+                          }
+                        }),
                   ),
                   const SizedBox(height: 60),
                 ],
@@ -158,8 +165,9 @@ class _SignUpState extends State<SignUp> {
     );
   }
 
-  Future<void> _doRegister() async {
-    print(isDoctor);
+  Future<String?> _doRegister() async {
+    var errorMessage;
+
     try {
       await auth.createUserWithEmailAndPassword(
           email: _emailController.text, password: _passwordController.text);
@@ -171,14 +179,22 @@ class _SignUpState extends State<SignUp> {
         Navigator.pushReplacementNamed(context, "/patient_dashboard");
       }
     } on FirebaseAuthException catch (e) {
-      if (e.code == 'weak-password') {
-        print('The passaword provided is too weak');
-      } else if (e.code == 'email-already-in-use') {
-        print('The account already exists for that email.');
+      switch (e.code) {
+        case "invalid-email":
+          errorMessage = "Invalid Email";
+          break;
+        case 'weak-password':
+          errorMessage = "Weak Password";
+          break;
+        case "email-already-in-use":
+          errorMessage = "Email Already In Use";
+          break;
+        default:
+          errorMessage = "error";
       }
-    } catch (e) {
-      print(e);
     }
+
+    return errorMessage;
   }
 
   void _createDoctor() {

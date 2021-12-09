@@ -99,7 +99,6 @@ class _LoginState extends State<Login> {
                         child: const Text('Login'),
                         onPressed: () async {
                           String? loginError = await _doLogin();
-                          print(loginError);
                           if (loginError != null) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
