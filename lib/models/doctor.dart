@@ -1,14 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:meu_consultorio/data/doctor_dao.dart';
+import 'package:meu_consultorio/models/appointment.dart';
 
 part 'doctor.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 class Doctor {
   final String email;
   final String name;
   final String medicalId;
+  List<Appointment>? appointments;
 
   Doctor({required this.name, required this.email, required this.medicalId});
 
@@ -24,5 +26,14 @@ class Doctor {
   static Future<Doctor> fromEmail(String email) async {
     final patientSnapshot = await DoctorDao().getDoctorSnapshotByEmail(email);
     return Doctor.fromSnapshot(patientSnapshot);
+  }
+
+  addAppointments(Appointment appointment) {
+    if (this.appointments == null) {
+      this.appointments = <Appointment>[];
+      this.appointments!.add(appointment);
+    } else {
+      this.appointments!.add(appointment);
+    }
   }
 }
