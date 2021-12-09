@@ -103,7 +103,7 @@ class _SignUpState extends State<SignUp> {
                   Expanded(
                     child: TextFormField(
                       decoration: const InputDecoration(
-                          border: UnderlineInputBorder(), hintText: 'Password'),
+                      border: UnderlineInputBorder(), hintText: 'Password'),
                       autofocus: false,
                       obscureText: true,
                       keyboardType: TextInputType.visiblePassword,
@@ -140,6 +140,9 @@ class _SignUpState extends State<SignUp> {
                   const SizedBox(height: 20),
                   Expanded(
                     child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.teal
+                      ),
                       child: const Text('Sign Up'),
                       onPressed: () {
                         _doRegister();

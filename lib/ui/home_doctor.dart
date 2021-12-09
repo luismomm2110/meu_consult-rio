@@ -33,6 +33,7 @@ class HomeDoctorState extends State<HomeDoctor> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("MyClinic"),
+        backgroundColor: Colors.teal,
         actions: [
           IconButton(
             onPressed: () {
