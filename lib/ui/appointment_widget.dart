@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class ChartWidget extends StatelessWidget {
-  final String chart;
+class AppointmentWidget extends StatelessWidget {
   final DateTime date;
-  final String doctorName;
-  final String medicalId;
+  final String patientName;
 
-  const ChartWidget(this.chart, this.date, this.doctorName, this.medicalId,
-      {Key? key})
+  const AppointmentWidget(this.date, this.patientName, {Key? key})
       : super(key: key);
 
   @override
@@ -43,7 +40,7 @@ class ChartWidget extends StatelessWidget {
                       children: <Widget>[
                         Row(
                           children: [
-                            Text(chart),
+                            Text("Patient: $patientName"),
                           ],
                         ),
                       ],
@@ -53,10 +50,8 @@ class ChartWidget extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('$doctorName $medicalId',
-                      style: TextStyle(fontWeight: FontWeight.bold)),
-                  Text("Expires in: " +
-                    DateFormat('dd/MM/yyyy').format(date).toString(),
+                  Text(
+                    "Date: " + DateFormat('dd/MM/yyyy').format(date).toString(),
                     style: const TextStyle(color: Colors.grey),
                   ),
                 ],

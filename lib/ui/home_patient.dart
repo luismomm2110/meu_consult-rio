@@ -36,7 +36,14 @@ class HomePatientState extends State<HomePatient> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("MyClinic"),
+        title: Row(children: [
+          Text(
+            "$email",
+            style: TextStyle(fontSize: 12),
+          ),
+          SizedBox(width: 30),
+          Text("MyClinic"),
+        ]),
         actions: [
           IconButton(
             onPressed: () {
@@ -51,6 +58,12 @@ class HomePatientState extends State<HomePatient> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
+            Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+              Text(
+                "Make an Appointment",
+                style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+              ),
+            ]),
             Row(
               children: [
                 Expanded(
@@ -79,6 +92,13 @@ class HomePatientState extends State<HomePatient> {
                 ),
               ],
             ),
+            SizedBox(height: 30),
+            Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+              Text(
+                "Appointments",
+                style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+              ),
+            ]),
             _getChartList(patientDao, userDao),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -99,7 +119,7 @@ class HomePatientState extends State<HomePatient> {
   Widget _getChartList(PatientDao patientDao, UserDao userDao) {
     return FutureBuilder<Patient>(
       builder: (context, snapshot) {
-        if (!snapshot.hasData)
+        if (snapshot.connectionState != ConnectionState.done)
           return const Center(child: LinearProgressIndicator());
         return Expanded(child: _buildList(context, snapshot.data!.charts));
       },
