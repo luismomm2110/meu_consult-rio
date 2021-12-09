@@ -8,7 +8,7 @@
 
 - Luis Antonio Momm Duarte
 - Matheus Ferreira
-- Santiago Nunes
+- Santiago Fleitas
 
 ## Funcionalidades
 
@@ -16,7 +16,8 @@
 
 - Login e Senha para perfis de médicos e pacientes
 - Médicos poderão registrar receitas, pacientes poderão ler
-- Ambos poderão marcar ou cancelar consultas
+- Paciente poderão marcar consultar, médicos poderão ler 
+- Mensagens de erros para logins e registros errados 
 
 ## Pacotes utilizados
 
